@@ -55,4 +55,8 @@ describe('default settings', () => {
   it('disables hideShortsCompletely by default', () => {
     expect(DEFAULT_SETTINGS.hideShortsCompletely).toBe(false);
   });
+
+  it('enables hideAllFlagged by default (grey collapses into hide)', () => {
+    expect(DEFAULT_SETTINGS.hideAllFlagged).toBe(true);
+  });
 });

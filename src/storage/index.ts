@@ -6,6 +6,13 @@ export interface Settings {
   whitelist: string[];
   blacklist: string[];
   hideShortsCompletely: boolean;
+  /**
+   * When true, any video that would be greyed (score 30..59) is hidden
+   * outright (`display: none`) instead. This is the default — the
+   * 3-level grey-with-badge UX still exists for users who turn this off
+   * (they get the original "soft warning" experience).
+   */
+  hideAllFlagged: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -14,6 +21,7 @@ export const DEFAULT_SETTINGS: Settings = {
   whitelist: [],
   blacklist: [],
   hideShortsCompletely: false,
+  hideAllFlagged: true,
 };
 
 export interface Stats {

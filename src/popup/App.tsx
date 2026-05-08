@@ -78,6 +78,23 @@ export function App() {
       </section>
 
       <section className="popup__section">
+        <h2 className="popup__h2">Filtering style</h2>
+        <label className="popup__toggle">
+          <input
+            type="checkbox"
+            checked={settings.hideAllFlagged}
+            onChange={(e) => void update({ hideAllFlagged: e.target.checked })}
+            aria-label="Hide all flagged videos"
+          />
+          <span>Hide all flagged videos (recommended)</span>
+        </label>
+        <p className="popup__hint">
+          On by default: borderline matches disappear instead of being greyed. Turn off to see a
+          warning badge on borderline videos and click through.
+        </p>
+      </section>
+
+      <section className="popup__section">
         <h2 className="popup__h2">Shorts</h2>
         <label className="popup__toggle">
           <input

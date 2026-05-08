@@ -89,7 +89,15 @@ async function bootstrap() {
 
         const scored = scoreVideo(metadata, allRules);
         const thresholds = thresholdsFromSensitivity(currentSettings.sensitivity);
-        const action = actionForScore(scored.score, thresholds);
+        let action = actionForScore(scored.score, thresholds);
+
+        // 'Hide all flagged' setting (default on): collapse the grey
+        // band into the hide band so users never see the warning badge,
+        // they just see fewer videos. The grey band remains for users
+        // who explicitly opt out.
+        if (currentSettings.hideAllFlagged && action === 'grey') {
+          action = 'hide';
+        }
 
         applyAction(el, action, scored);
 

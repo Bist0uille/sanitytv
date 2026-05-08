@@ -19,7 +19,7 @@ describe('Popup App', () => {
 
   it('shows hidden/greyed counters', async () => {
     render(<App />);
-    expect(await screen.findByText(/hidden/)).toBeInTheDocument();
-    expect(await screen.findByText(/greyed/)).toBeInTheDocument();
+    expect(await screen.findByText('hidden')).toBeInTheDocument();
+    expect(await screen.findByText('greyed')).toBeInTheDocument();
   });
 });

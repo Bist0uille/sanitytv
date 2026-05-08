@@ -37,14 +37,14 @@ brainrot patterns, or content harmful to children.
 
 WHAT IT DOES
 SanityTV scores each video on the YouTube home, search, and sidebar
-using a transparent set of heuristics, then applies one of three
-treatments:
-  • Score below 30: shown normally
-  • Score 30 to 60: greyed out with a warning badge (still clickable)
-  • Score 60 or above: hidden
+using a transparent set of heuristics. By default, any video that
+crosses the threshold disappears from your feed — you simply see
+fewer videos.
 
-You can adjust the sensitivity slider to be more or less aggressive,
-or turn the filter off entirely with one click.
+Prefer a softer experience? Turn off "Hide all flagged" in the popup
+and borderline matches will be greyed-out with a warning badge
+instead, still clickable. You can also adjust the sensitivity
+slider, or turn the filter off entirely with one click.
 
 WHAT IT DETECTS
   • Clickbait titles (uppercase shouting, listicles, "you won't
@@ -93,15 +93,15 @@ brainrot, ou contenus nuisibles aux enfants.
 
 CE QUE ÇA FAIT
 SanityTV score chaque vidéo de la home, de la recherche et de la
-sidebar YouTube avec un ensemble transparent d'heuristiques, puis
-applique un des trois traitements :
-  • Score < 30 : affichée normalement
-  • Score 30 à 60 : grisée avec un badge d'avertissement (toujours
-    cliquable)
-  • Score ≥ 60 : masquée
+sidebar YouTube avec un ensemble transparent d'heuristiques. Par
+défaut, toute vidéo qui dépasse le seuil disparaît de votre fil —
+vous voyez simplement moins de vidéos.
 
-Vous pouvez ajuster le curseur de sensibilité, ou désactiver le
-filtre d'un clic.
+Vous préférez une expérience plus douce ? Désactivez « Hide all
+flagged » dans le popup et les matches limites seront alors grisés
+avec un badge d'avertissement, toujours cliquables. Vous pouvez
+aussi ajuster le curseur de sensibilité ou désactiver le filtre
+d'un clic.
 
 CE QUE ÇA DÉTECTE
   • Titres clickbait (MAJUSCULES, listicles, "vous n'allez pas
