@@ -30,6 +30,7 @@ yarn-error.log*
 .claude/
 .cursor/
 
-screenshot/
-screenshots/
+# Top-level debug screenshots only — NOT store-assets/screenshots/
+/screenshot/
+/screenshots/
 diagnose-output/
