@@ -46,6 +46,10 @@ const TOP_LIST_PATTERN = /\b(top|les)\s*\d+\b/i;
 // marks (?!?, !?!, !?!?), but NOT a lone "?!" / "!?" — those are common
 // in legit emphatic titles like "Wait, what?!".
 const EXCESSIVE_PUNCTUATION = /!!+|\?\?+|[!?]{3,}/;
+// All-caps "screaming" word of 5+ letters in an otherwise mixed-case title
+// (the uppercase-ratio rule below misses these because the global ratio
+// stays low). 5+ avoids common 3-letter acronyms (USA, CPU, GPU, URSS).
+const SCREAMING_WORD = /\b[A-Z]{5,}\b/g;
 const ATTENTION_EMOJIS =
   /[\u{1F525}\u{1F633}\u{1F92F}\u{1F92F}\u{1F4A5}\u{1F31F}\u{2757}\u{203C}\u{2B05}\u{27A1}\u{2B06}\u{2B07}]/u;
 
@@ -79,8 +83,25 @@ function evaluate(ctx: RuleContext): RuleResult {
   }
 
   if (EXCESSIVE_PUNCTUATION.test(title)) {
-    raw += 20;
-    hits.push('excessive punctuation');
+    // Tier by longest run length: !! or ?? = doubled (25), !!! or more = triple+ (35).
+    const runs = title.match(/[!?]{2,}/g) ?? [];
+    const longestRun = runs.reduce((m, r) => Math.max(m, r.length), 0);
+    if (longestRun >= 3) {
+      raw += 35;
+      hits.push(`triple+ punctuation (${longestRun})`);
+    } else {
+      raw += 25;
+      hits.push('doubled punctuation');
+    }
+  }
+
+  const screamingWords = title.match(SCREAMING_WORD)?.length ?? 0;
+  if (screamingWords >= 2) {
+    raw += 30;
+    hits.push(`${screamingWords} screaming words`);
+  } else if (screamingWords === 1) {
+    raw += 15;
+    hits.push('screaming word');
   }
 
   if (ATTENTION_EMOJIS.test(title)) {

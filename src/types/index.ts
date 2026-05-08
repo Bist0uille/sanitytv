@@ -2,7 +2,8 @@ export type DetectionSignal =
   | 'clickbait_title'
   | 'rage_bait'
   | 'brainrot_structural'
-  | 'sensationalism';
+  | 'sensationalism'
+  | 'harmful_kid_content';
 
 export interface VideoMetadata {
   videoId: string;
