@@ -80,8 +80,8 @@ Click the SanityTV icon in your toolbar to open the controls:
 - **Filtering style** — _on by default_: flagged videos disappear
   outright. Turn it off to get a softer experience: borderline
   videos are dimmed with a `⚠` badge and stay clickable.
-- **Hide all Shorts** — _off by default_. Turn on to skip every
-  short-form video, even from creators you trust.
+- **Hide all Shorts** — _on by default_. Removes every short-form video
+  and the Shorts shelf from search results. Turn off to get them back.
 - **Channel lists** — always show some channels (whitelist) or always
   hide others (blacklist), regardless of the score.
 

@@ -52,8 +52,8 @@ describe('whitelist / blacklist matching', () => {
 });
 
 describe('default settings', () => {
-  it('disables hideShortsCompletely by default', () => {
-    expect(DEFAULT_SETTINGS.hideShortsCompletely).toBe(false);
+  it('enables hideShortsCompletely by default', () => {
+    expect(DEFAULT_SETTINGS.hideShortsCompletely).toBe(true);
   });
 
   it('enables hideAllFlagged by default (grey collapses into hide)', () => {

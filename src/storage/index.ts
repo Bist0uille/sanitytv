@@ -20,7 +20,10 @@ export const DEFAULT_SETTINGS: Settings = {
   sensitivity: 50,
   whitelist: [],
   blacklist: [],
-  hideShortsCompletely: false,
+  // ON by default to match the "max clean" YouTube experience the
+  // README screenshots showcase. Users who want Shorts back can flip
+  // it off in the popup in one click.
+  hideShortsCompletely: true,
   hideAllFlagged: true,
 };
 

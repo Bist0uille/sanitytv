@@ -106,8 +106,8 @@ export function App() {
           <span>Hide all Shorts (regardless of score)</span>
         </label>
         <p className="popup__hint">
-          Off by default — a Short alone is not flagged. Turn this on to hide every short-form
-          video, even from creators you trust.
+          On by default — keeps the feed Shorts-free. Turn off if you want short-form videos from
+          your usual creators back.
         </p>
       </section>
 
