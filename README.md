@@ -2,9 +2,8 @@
 
 > A clean YouTube. Local. Private. Free.
 
-<!-- Logo: Tim is generating this, replace the next line when ready -->
 <p align="center">
-  <img src="./store-assets/promo-440x280.png" alt="SanityTV" width="440">
+  <img src="./store-assets/logo.png" alt="SanityTV" width="280">
 </p>
 
 SanityTV is a Chrome extension that automatically removes YouTube
