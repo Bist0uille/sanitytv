@@ -24,7 +24,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run build:chrome",
+    "build:chrome": "tsc -b && BROWSER=chrome vite build",
+    "build:firefox": "tsc -b && BROWSER=firefox vite build",
+    "package:chrome": "npm run build:chrome && cd dist-chrome && zip -r ../sanitytv-v$npm_package_version.zip . && cd ..",
+    "package:firefox": "npm run build:firefox && cd dist-firefox && zip -r ../sanitytv-firefox-v$npm_package_version.zip . && cd ..",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

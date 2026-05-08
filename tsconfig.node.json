@@ -16,5 +16,11 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["node", "vitest"]
   },
-  "include": ["vite.config.ts", "vitest.config.ts", "manifest.config.ts"]
+  "include": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "manifest.base.ts",
+    "manifest.chrome.config.ts",
+    "manifest.firefox.config.ts"
+  ]
 }
