@@ -6,10 +6,10 @@
   <img src="./store-assets/logo.png" alt="SanityTV" width="280">
 </p>
 
-SanityTV is a Chrome extension that automatically removes YouTube
-videos engineered to hijack your attention — clickbait, rage-bait,
-sensationalism, brainrot Shorts, and content harmful to children.
-Your feed stays full of what's actually worth watching.
+SanityTV is a browser extension (Chrome and Firefox) that automatically
+removes YouTube videos engineered to hijack your attention — clickbait,
+rage-bait, sensationalism, brainrot Shorts, and content harmful to
+children. Your feed stays full of what's actually worth watching.
 
 Everything happens inside your browser. Nothing leaves your device.
 No account, no API key, no tracking, no monetisation.
@@ -104,21 +104,47 @@ The extension only requests two permissions:
   (and only YouTube pages).
 
 No other website is touched. No analytics, no third-party SDK, no
-network call.
+network call. Firefox builds additionally declare
+`browser_specific_settings.gecko.data_collection_permissions = ["none"]`,
+which surfaces the same guarantee in the install dialog.
 
 ---
 
 ## Install
 
-**From the Chrome Web Store** — coming soon. The submission package is
-ready and the listing is in [`store-assets/`](./store-assets/).
+**From the Chrome Web Store** — coming soon. Submission package ready
+in [`store-assets/`](./store-assets/) (see `FILL-IN.md`).
 
-**Manual install (developer mode)** while the store review is pending:
+**From Mozilla Add-ons (Firefox)** — coming soon. Submission package
+ready in [`store-assets/`](./store-assets/) (see `AMO-FILL-IN.md`).
 
-1. Clone the repo and run `npm install`
-2. `npm run build`
-3. Open `chrome://extensions`, enable **Developer mode** (top right)
-4. Click **Load unpacked** and select the `dist/` folder
+**Manual install (developer mode)** while reviews are pending:
+
+### Chrome
+
+```bash
+git clone https://github.com/Bist0uille/sanitytv.git
+cd sanitytv
+npm install
+npm run build:chrome
+```
+
+Then in Chrome: `chrome://extensions` → enable **Developer mode** →
+**Load unpacked** → select the `dist-chrome/` folder.
+
+### Firefox
+
+```bash
+git clone https://github.com/Bist0uille/sanitytv.git
+cd sanitytv
+npm install
+npm run build:firefox
+```
+
+Then in Firefox: `about:debugging#/runtime/this-firefox` → **Load
+Temporary Add-on** → select `dist-firefox/manifest.json`.
+(The temporary load lasts until Firefox restarts. AMO publication
+removes the need for this.)
 
 ---
 
@@ -126,10 +152,12 @@ ready and the listing is in [`store-assets/`](./store-assets/).
 
 - [x] **Phase 1** — Detection engine + popup UI
 - [x] **Phase 2** — Quality bar (synthetic + empirical regression
-      suites, 7 ADRs)
-- [x] **Phase 3** — Chrome Web Store submission package ready
-- [ ] **Phase 4** — Publish on the Chrome Web Store
-- [ ] **Phase 5** — Firefox port
+      suites, 7 ADRs, security audit)
+- [x] **Phase 3** — Chrome Web Store + Mozilla AMO submission
+      packages, multi-target build (Chrome / Firefox)
+- [ ] **Phase 4** — Publish on the Chrome Web Store and AMO
+- [ ] **Phase 5** — Safari (macOS App Store via the Safari Web
+      Extension wrapper)
 
 ---
 
@@ -143,8 +171,10 @@ no funny business in the source? Welcome.
 - TypeScript 5 strict
 - Vite + [`@crxjs/vite-plugin`](https://crxjs.dev/) for Manifest V3
 - React 18 (popup)
-- Vitest + Testing Library (unit)
-- Playwright (empirical regression harness)
+- Vitest + Testing Library (unit, 130 tests)
+- Playwright (Chrome empirical regression harness)
+- Selenium WebDriver + geckodriver (Firefox functional runtime test)
+- web-ext (AMO lint and Firefox dev launch)
 - ESLint 9 (flat config) + Prettier
 - Husky + lint-staged
 - GitHub Actions (CI: lint, format, typecheck, test, build)
@@ -153,11 +183,21 @@ Requires Node ≥ 20 and npm.
 
 ```bash
 npm install
-npm run dev          # vite dev with HMR
-npm run build        # production build → dist/
+
+# build
+npm run build:chrome              # → dist-chrome/
+npm run build:firefox             # → dist-firefox/
+npm run package:chrome            # → sanitytv-v$VERSION.zip
+npm run package:firefox           # → sanitytv-firefox-v$VERSION.zip
+
+# quality
+npm test                          # 130 unit tests
 npm run typecheck
 npm run lint
-npm test
+npm run format
+
+# dev mode (Chrome HMR)
+npm run dev
 ```
 
 ### Project layout
@@ -176,24 +216,46 @@ src/
 ├── storage/      # chrome.storage abstraction (settings + stats)
 └── types/
 
-tests/                # 124 unit tests across 10 files
-scripts/              # diagnose, regression-test, icon/promo generators
+manifest.base.ts                  # shared manifest fields
+manifest.chrome.config.ts         # Chrome (and Edge) variant
+manifest.firefox.config.ts        # Firefox variant + gecko block
+vite.config.ts                    # reads BROWSER env var
+
+tests/                            # 130 unit tests across 11 files
+scripts/                          # diagnose, regression, runtime tests,
+                                  # icon/promo/screenshot generators
 docs/
 ├── PRIVACY.md
-└── adr/              # 7 architecture decision records
-store-assets/         # listing copy, screenshots, promo tile, submission README
+├── SECURITY-AUDIT.md
+├── AMO-BUILD.md                  # build instructions for Mozilla reviewers
+└── adr/                          # 7 architecture decision records
+
+store-assets/                     # listing copy + screenshots + promo
+                                  # ├── FILL-IN.md       (Chrome Web Store)
+                                  # └── AMO-FILL-IN.md   (Mozilla AMO)
 ```
 
 ### Quality bar
 
-Two harnesses must be green before any rule change ships:
+Three harnesses must be green before any rule change ships:
 
 - **Synthetic** — `tests/regression-corpus.test.ts`, ~60 curated titles
   with an `expected` display band. Runs in CI. **60/60 currently pass.**
-- **Empirical** — `node scripts/regression-test.mjs` walks ~18 real
-  YouTube searches and asserts macro thresholds per query.
-  **16/18 currently pass.** The two accepted limitations are
-  documented in [ADR-0006](./docs/adr/0006-regression-test-strategy.md).
+- **Empirical (Chrome)** — `node scripts/regression-test.mjs` walks
+  ~18 real YouTube searches via Playwright and asserts macro
+  thresholds per query. **16/18 currently pass.** The two accepted
+  limitations are documented in
+  [ADR-0006](./docs/adr/0006-regression-test-strategy.md).
+- **Functional (Firefox)** —
+  `node scripts/firefox-runtime-test.mjs` installs the unsigned XPI
+  via geckodriver+Marionette into a real Firefox, navigates to the
+  clickbait query, and probes `data-sanitytv` attributes.
+  **24/24 cards tagged.**
+
+The Firefox bundle additionally passes `web-ext lint` (Mozilla's
+official validator: 0 errors, 3 acceptable warnings — see
+`docs/SECURITY-AUDIT.md` and the post-build patcher in
+`scripts/post-build-firefox.mjs` for context).
 
 ### Architecture decisions
 
