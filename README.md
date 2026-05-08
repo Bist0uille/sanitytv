@@ -2,7 +2,10 @@
 
 > A Chrome extension that filters YouTube videos exploiting attention-engineering patterns: clickbait, rage-bait, brainrot/low-effort content, and sensationalism.
 
-**Status:** Phase 0 — bootstrap. Not yet functional. Detection engine ships in Phase 1.
+**Status:** Phase 1 V0 working. Validated end-to-end: on a clickbait-heavy
+search (`TOP+10+SHOCKING+DESTROYS`), 21 / 24 results are masked. On a
+serious-creator search (`veritasium`), only 1 / 17 is flagged (a Short
+with `?!` punctuation). Phase 2 (local ML model) is the next milestone.
 
 ## Why
 
@@ -48,6 +51,19 @@ npm run lint
 npm test
 ```
 
+### End-to-end diagnostic
+
+`scripts/diagnose.mjs` launches Chromium with the unpacked extension,
+loads a YouTube URL (default: a clickbait-heavy search), and dumps the
+masking decisions plus a screenshot. Useful when iterating on rules.
+
+```bash
+npm run build
+node scripts/diagnose.mjs                                   # default query
+node scripts/diagnose.mjs "https://www.youtube.com/..."     # custom URL
+# Output → diagnose-output/page.png and diagnose-output/logs.txt
+```
+
 To load the extension in Chrome:
 
 1. `npm run build`
@@ -73,8 +89,8 @@ src/
 
 ## Roadmap
 
-- [x] Phase 0 — Bootstrap (this PR)
-- [ ] Phase 1 — V0 heuristics + UI masking
+- [x] Phase 0 — Bootstrap
+- [x] Phase 1 — V0 heuristics + UI masking
 - [ ] Phase 2 — V1 local ML classifier
 - [ ] Phase 3 — Personalization (whitelist, learning, stats)
 - [ ] Phase 4 — Chrome Web Store submission
