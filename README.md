@@ -96,6 +96,17 @@ src/
 - [ ] Phase 4 — Chrome Web Store submission
 - [ ] Phase 5 — Firefox port + thumbnail vision model
 
+## Architecture decisions
+
+The major design decisions are documented as ADRs under
+[`docs/adr/`](./docs/adr/):
+
+- [ADR-0001](./docs/adr/0001-no-byok-no-embedded-keys.md) — No BYOK, no embedded API keys
+- [ADR-0002](./docs/adr/0002-sum-aggregation-not-mean.md) — Aggregate signals by sum, not weighted mean
+- [ADR-0003](./docs/adr/0003-three-level-display-not-binary.md) — Three-level display strategy
+- [ADR-0004](./docs/adr/0004-dom-dedup-via-data-attribute.md) — DOM dedup via attribute marker
+- [ADR-0005](./docs/adr/0005-shorts-format-not-inherently-brainrot.md) — Shorts format ≠ brainrot
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).

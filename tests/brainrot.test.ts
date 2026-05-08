@@ -10,12 +10,16 @@ describe('brainrotRule', () => {
     expect(brainrotRule.evaluate(ctx('A normal video')).contribution).toBe(0);
   });
 
-  it('flags 30-60s short-form videos', () => {
-    expect(brainrotRule.evaluate(ctx('something', 45)).contribution).toBeGreaterThanOrEqual(50);
+  it('does NOT trigger grey threshold for a 30-60s Short alone', () => {
+    // A Short by itself is not brainrot — Veritasium et al. post legit Shorts.
+    const c = brainrotRule.evaluate(ctx('something', 45)).contribution;
+    expect(c).toBeLessThan(30);
   });
 
-  it('strongly flags <30s ultra-short videos', () => {
-    expect(brainrotRule.evaluate(ctx('something', 15)).contribution).toBeGreaterThanOrEqual(75);
+  it('contributes a non-zero signal for <30s ultra-short videos', () => {
+    const c = brainrotRule.evaluate(ctx('something', 15)).contribution;
+    expect(c).toBeGreaterThan(0);
+    expect(c).toBeLessThan(50);
   });
 
   it('does not flag normal-length videos', () => {

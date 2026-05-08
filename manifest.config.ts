@@ -6,9 +6,19 @@ export default defineManifest({
   name: 'SanityTV',
   description: pkg.description,
   version: pkg.version,
+  icons: {
+    16: 'public/icons/icon-16.png',
+    32: 'public/icons/icon-32.png',
+    48: 'public/icons/icon-48.png',
+    128: 'public/icons/icon-128.png',
+  },
   action: {
     default_popup: 'src/popup/index.html',
     default_title: 'SanityTV',
+    default_icon: {
+      16: 'public/icons/icon-16.png',
+      32: 'public/icons/icon-32.png',
+    },
   },
   background: {
     service_worker: 'src/background/index.ts',

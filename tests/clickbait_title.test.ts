@@ -37,6 +37,16 @@ describe('clickbaitTitleRule', () => {
     expect(r.contribution).toBeGreaterThan(0);
   });
 
+  it('does not flag a single "?!" (common emphatic punctuation)', () => {
+    const r = clickbaitTitleRule.evaluate(ctx('Wait, what?!'));
+    expect(r.contribution).toBe(0);
+  });
+
+  it('flags doubled bangs or question marks', () => {
+    expect(clickbaitTitleRule.evaluate(ctx('Really??')).contribution).toBeGreaterThan(0);
+    expect(clickbaitTitleRule.evaluate(ctx('Hello!!')).contribution).toBeGreaterThan(0);
+  });
+
   it('flags clickbait keywords (English)', () => {
     const r = clickbaitTitleRule.evaluate(ctx('You won’t believe what happens next'));
     expect(r.contribution).toBeGreaterThan(0);

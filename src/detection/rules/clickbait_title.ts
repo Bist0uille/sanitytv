@@ -6,12 +6,17 @@ const CLICKBAIT_KEYWORDS_EN = [
   "you won't believe",
   'gone wrong',
   'gone sexual',
+  'goes wrong',
   'must watch',
   'insane',
+  'craziest',
   'mind blown',
   'will blow your mind',
   'what happens next',
   'this is why',
+  'unbelievable',
+  'epic fail',
+  'epic win',
 ];
 
 const CLICKBAIT_KEYWORDS_FR = [
@@ -26,12 +31,21 @@ const CLICKBAIT_KEYWORDS_FR = [
   'voici pourquoi',
   'la vérité sur',
   'enfin la vérité',
+  'absolument fou',
+  'complètement dingue',
+  'pète un câble',
+  'pète les plombs',
+  'choque tout le monde',
+  'dérapage',
 ];
 
 const CLICKBAIT_KEYWORDS = [...CLICKBAIT_KEYWORDS_EN, ...CLICKBAIT_KEYWORDS_FR];
 
 const TOP_LIST_PATTERN = /\b(top|les)\s*\d+\b/i;
-const EXCESSIVE_PUNCTUATION = /[!?]{2,}/;
+// Match runs of 2+ identical bangs/marks (!! or ??), or 3+ alternating
+// marks (?!?, !?!, !?!?), but NOT a lone "?!" / "!?" — those are common
+// in legit emphatic titles like "Wait, what?!".
+const EXCESSIVE_PUNCTUATION = /!!+|\?\?+|[!?]{3,}/;
 const ATTENTION_EMOJIS =
   /[\u{1F525}\u{1F633}\u{1F92F}\u{1F92F}\u{1F4A5}\u{1F31F}\u{2757}\u{203C}\u{2B05}\u{27A1}\u{2B06}\u{2B07}]/u;
 

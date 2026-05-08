@@ -16,11 +16,16 @@ function evaluate(ctx: RuleContext): RuleResult {
   let raw = 0;
 
   if (durationSeconds !== undefined) {
+    // Philosophy: the Short FORMAT is not inherently brainrot — many serious
+    // creators (Veritasium, Kurzgesagt) post legitimate Shorts. So a Short
+    // alone shouldn't trigger the grey threshold (30). It contributes a
+    // small signal that, COMBINED with another rule (clickbait keyword,
+    // rage verb, morbid keyword), reliably tips into hide territory.
     if (durationSeconds > 0 && durationSeconds < 30) {
-      raw += 80;
+      raw += 35;
       hits.push(`very short (${durationSeconds}s)`);
     } else if (durationSeconds > 0 && durationSeconds < 60) {
-      raw += 55;
+      raw += 20;
       hits.push(`short-form (${durationSeconds}s)`);
     }
   }
