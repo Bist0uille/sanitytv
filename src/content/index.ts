@@ -43,15 +43,22 @@ let processed = 0;
 let masked = 0;
 let observed = 0;
 
+function applyShortsClass(s: Settings) {
+  if (!document.body) return;
+  document.body.classList.toggle('sanitytv-no-shorts', s.hideShortsCompletely);
+}
+
 async function bootstrap() {
   log('content script booting on', location.href);
   try {
     ensureStyles();
     currentSettings = await getSettings();
     log('settings loaded', currentSettings);
+    applyShortsClass(currentSettings);
 
     onSettingsChange((next) => {
       currentSettings = next;
+      applyShortsClass(next);
       log('settings updated', next);
     });
 

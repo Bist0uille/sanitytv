@@ -36,6 +36,18 @@ export const STYLES = `
 [${APPLIED_ATTR}="hide"] {
   display: none !important;
 }
+
+/* When the Hide-all-Shorts toggle is on, also collapse YouTube's
+   Shorts shelves themselves — otherwise an empty shelf with a
+   "Show more" button stays on top of search results. */
+body.sanitytv-no-shorts ytd-reel-shelf-renderer,
+body.sanitytv-no-shorts ytd-rich-shelf-renderer[is-shorts],
+body.sanitytv-no-shorts ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+body.sanitytv-no-shorts grid-shelf-view-model,
+body.sanitytv-no-shorts ytd-shelf-renderer:has([is-shorts]),
+body.sanitytv-no-shorts [is-shorts] {
+  display: none !important;
+}
 `;
 
 export function ensureStyles(): void {

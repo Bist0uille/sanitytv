@@ -128,8 +128,11 @@ await shot('00-clickbait-before.png', async () => {
   await loadYouTubeAndZoom(CLICKBAIT_URL);
 });
 
-// 1) After — extension on with hide-all-flagged default. Same URL.
-await setSettings({ enabled: true });
+// 1) After — extension on with both Hide-all-flagged AND
+//    Hide-all-Shorts enabled. Same URL. This is the "max clean"
+//    config a user gets after one extra click in the popup, and
+//    it makes the before/after delta visible at a glance.
+await setSettings({ enabled: true, hideAllFlagged: true, hideShortsCompletely: true });
 await shot('01-clickbait-after.png', async () => {
   await loadYouTubeAndZoom(CLICKBAIT_URL);
 });
