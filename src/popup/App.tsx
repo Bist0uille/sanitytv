@@ -6,6 +6,8 @@ export function App() {
   const [refreshKey, setRefreshKey] = useState(0);
   const { stats, reset } = useStats(refreshKey);
 
+  const version = chrome?.runtime?.getManifest?.()?.version ?? '';
+
   if (!loaded) {
     return (
       <main className="popup">
@@ -21,7 +23,7 @@ export function App() {
     <main className="popup">
       <header className="popup__header">
         <h1>SanityTV</h1>
-        <span className="popup__badge">v0.0.1</span>
+        <span className="popup__badge">{version ? `v${version}` : ''}</span>
       </header>
 
       <section className="popup__row">
