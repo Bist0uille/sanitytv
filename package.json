@@ -1,0 +1,79 @@
+{
+  "name": "sanitytv",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Chrome extension that filters YouTube videos exploiting attention-engineering patterns (clickbait, rage-bait, brainrot, sensationalism).",
+  "license": "MIT",
+  "author": "Bist0uille <111542828+Bist0uille@users.noreply.github.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bist0uille/sanitytv.git"
+  },
+  "homepage": "https://github.com/Bist0uille/sanitytv#readme",
+  "bugs": {
+    "url": "https://github.com/Bist0uille/sanitytv/issues"
+  },
+  "keywords": [
+    "chrome-extension",
+    "youtube",
+    "digital-wellbeing",
+    "clickbait",
+    "attention",
+    "manifest-v3"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.32",
+    "@eslint/js": "^9.17.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/chrome": "^0.0.287",
+    "@types/node": "^22.10.5",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "jsdom": "^25.0.1",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
