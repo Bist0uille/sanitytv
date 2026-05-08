@@ -24,7 +24,9 @@ function evaluate(ctx: RuleContext): RuleResult {
   let raw = 0;
 
   if (COMBAT_VERBS_EN.test(title) || COMBAT_VERBS_FR.test(title)) {
-    raw += 40;
+    // Slightly above the grey threshold — combined with any other
+    // signal (uppercase, screaming, listicle), reliably tips into hide.
+    raw += 45;
     hits.push('combat verb');
   }
 
@@ -34,7 +36,9 @@ function evaluate(ctx: RuleContext): RuleResult {
   }
 
   if (VS_PATTERN.test(title)) {
-    raw += 20;
+    // Light weight: tech benchmarks (Linux vs Windows, AMD vs NVIDIA)
+    // dominate the false-positive set when the weight is high.
+    raw += 12;
     hits.push('confrontation pattern');
   }
 

@@ -96,6 +96,26 @@ src/
 - [ ] Phase 4 — Chrome Web Store submission
 - [ ] Phase 5 — Firefox port + thumbnail vision model
 
+## Quality bar
+
+Two harnesses must be green before any rule change ships:
+
+- **Synthetic** — `tests/regression-corpus.test.ts`, ~60 curated titles
+  with an `expected` display band. Runs in CI. **60/60 currently pass.**
+- **Empirical** — `node scripts/regression-test.mjs` walks ~18 real
+  YouTube searches and asserts macro thresholds per query.
+  **16/18 currently pass.** The two accepted limitations are
+  documented in [ADR-0006](./docs/adr/0006-regression-test-strategy.md).
+
+## Not a parental control
+
+SanityTV's `harmful_kid_content` rule does mask Elsagate-style content
+and named dangerous challenges, but **this is not a substitute for a
+parental control**. A determined adversary defeats heuristic filters
+trivially. For real protection of a child's YouTube experience, use
+[YouTube Kids](https://www.youtubekids.com/) or a dedicated parental
+control product. See [ADR-0007](./docs/adr/0007-not-a-parental-control.md).
+
 ## Architecture decisions
 
 The major design decisions are documented as ADRs under
@@ -106,6 +126,8 @@ The major design decisions are documented as ADRs under
 - [ADR-0003](./docs/adr/0003-three-level-display-not-binary.md) — Three-level display strategy
 - [ADR-0004](./docs/adr/0004-dom-dedup-via-data-attribute.md) — DOM dedup via attribute marker
 - [ADR-0005](./docs/adr/0005-shorts-format-not-inherently-brainrot.md) — Shorts format ≠ brainrot
+- [ADR-0006](./docs/adr/0006-regression-test-strategy.md) — Regression test strategy (50/50 synthetic + empirical)
+- [ADR-0007](./docs/adr/0007-not-a-parental-control.md) — Not a parental control
 
 ## Contributing
 

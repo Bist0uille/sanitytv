@@ -41,15 +41,17 @@ const CLICKBAIT_KEYWORDS_FR = [
 
 const CLICKBAIT_KEYWORDS = [...CLICKBAIT_KEYWORDS_EN, ...CLICKBAIT_KEYWORDS_FR];
 
-const TOP_LIST_PATTERN = /\b(top|les)\s*\d+\b/i;
+// Listicle pattern: "Top N", "Les N", or "N [shocking-adjective]".
+const TOP_LIST_PATTERN =
+  /\b(top|les)\s*\d+\b|\b\d+\s+(?:most\s+)?(?:shocking|insane|crazy|amazing|incredible|brutal|deadliest|scariest|biggest|worst|best|epic|hidden|secret|disturbing|outrageous|astonishing)\b/i;
 // Match runs of 2+ identical bangs/marks (!! or ??), or 3+ alternating
 // marks (?!?, !?!, !?!?), but NOT a lone "?!" / "!?" — those are common
 // in legit emphatic titles like "Wait, what?!".
 const EXCESSIVE_PUNCTUATION = /!!+|\?\?+|[!?]{3,}/;
-// All-caps "screaming" word of 5+ letters in an otherwise mixed-case title
+// All-caps "screaming" word of 6+ letters in an otherwise mixed-case title
 // (the uppercase-ratio rule below misses these because the global ratio
-// stays low). 5+ avoids common 3-letter acronyms (USA, CPU, GPU, URSS).
-const SCREAMING_WORD = /\b[A-Z]{5,}\b/g;
+// stays low). 6+ avoids 5-letter brand acronyms like INTEL.
+const SCREAMING_WORD = /\b[A-Z]{6,}\b/g;
 const ATTENTION_EMOJIS =
   /[\u{1F525}\u{1F633}\u{1F92F}\u{1F92F}\u{1F4A5}\u{1F31F}\u{2757}\u{203C}\u{2B05}\u{27A1}\u{2B06}\u{2B07}]/u;
 
@@ -95,18 +97,27 @@ function evaluate(ctx: RuleContext): RuleResult {
     }
   }
 
+  // Tuned so that 2 caps words alone (CHALEUR HUMAINE on Le Monde
+  // podcasts) stay just under the grey threshold, but combine cleanly
+  // with rage_bait (DESTROYS+HEATED) or keywords (CHOQUANT).
   const screamingWords = title.match(SCREAMING_WORD)?.length ?? 0;
   if (screamingWords >= 2) {
-    raw += 30;
+    raw += 20;
     hits.push(`${screamingWords} screaming words`);
   } else if (screamingWords === 1) {
-    raw += 15;
+    raw += 12;
     hits.push('screaming word');
   }
 
-  if (ATTENTION_EMOJIS.test(title)) {
+  // Single attention emoji is common in legit titles (one 🔥 at the end).
+  // Two or more is the spammy-clickbait pattern.
+  const emojiMatches = title.match(new RegExp(ATTENTION_EMOJIS, 'gu')) ?? [];
+  if (emojiMatches.length >= 2) {
     raw += 25;
-    hits.push('attention-grabbing emoji');
+    hits.push(`${emojiMatches.length} attention emojis`);
+  } else if (emojiMatches.length === 1) {
+    raw += 10;
+    hits.push('attention emoji');
   }
 
   const kw = keywordHits(title);
