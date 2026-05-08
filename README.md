@@ -18,8 +18,8 @@ No account, no API key, no tracking, no monetisation.
 
 ## See the difference
 
-Same search query, same browser. Left: SanityTV paused. Right:
-SanityTV active with the default settings.
+Same search query, same browser. First with SanityTV paused, then with
+the default settings on.
 
 **Before** — Shorts shelf, screaming thumbnails, listicles, "shocking"
 everywhere:
