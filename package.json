@@ -2,7 +2,7 @@
   "name": "sanitytv",
   "version": "0.0.3",
   "private": false,
-  "description": "Chrome extension that filters YouTube videos exploiting attention-engineering patterns (clickbait, rage-bait, brainrot, sensationalism).",
+  "description": "Filter YouTube videos exploiting clickbait, rage-bait, brainrot or sensationalism. 100% local. No tracking. Free.",
   "license": "MIT",
   "author": "Bist0uille <111542828+Bist0uille@users.noreply.github.com>",
   "repository": {
