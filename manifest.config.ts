@@ -14,6 +14,13 @@ export default defineManifest({
     service_worker: 'src/background/index.ts',
     type: 'module',
   },
+  content_scripts: [
+    {
+      matches: ['*://*.youtube.com/*'],
+      js: ['src/content/index.ts'],
+      run_at: 'document_idle',
+    },
+  ],
   permissions: ['storage'],
   host_permissions: ['*://*.youtube.com/*'],
 });
