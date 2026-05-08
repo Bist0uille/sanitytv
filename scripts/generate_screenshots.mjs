@@ -109,7 +109,34 @@ async function shot(name, action) {
 async function loadYouTubeAndZoom(url) {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await page.waitForTimeout(7000);
+  // Initial settle — YouTube's first paint
+  await page.waitForTimeout(8000);
+
+  // Wait for the search-result grid to actually contain cards. With
+  // hide-all-flagged + hide-all-shorts on, YouTube keeps lazy-loading
+  // to fill the (mostly empty) viewport, so we have to coax it to
+  // settle before the capture.
+  await page
+    .waitForFunction(
+      () =>
+        document.querySelectorAll(
+          'ytd-video-renderer, ytd-rich-item-renderer, ytd-compact-video-renderer',
+        ).length >= 10,
+      { timeout: 20000 },
+    )
+    .catch(() => {
+      // Best-effort — proceed even if YouTube never reaches 10 cards
+      // (heavy filtering can leave very few).
+    });
+
+  // Scroll down to force lazy loading of more rows, then back to top
+  // so the capture starts at the top of the SERP (where the Shorts
+  // shelf lives in the before shot).
+  await page.evaluate(() => window.scrollBy(0, 1600));
+  await page.waitForTimeout(3500);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(2500);
+
   // Zoom out aggressively so the wall of clickbait (Shorts shelf +
   // multiple rows of thumbnails) is visible in a single frame. The
   // body.style.zoom CSS property is Chromium-specific and works
@@ -117,9 +144,10 @@ async function loadYouTubeAndZoom(url) {
   await page.evaluate((z) => {
     document.body.style.zoom = z;
   }, ZOOM);
-  // Stay at the top of the page so the loud Shorts shelf is included
-  // — that's where the visceral thumbnails live.
-  await page.waitForTimeout(2500);
+
+  // Final settle for layout reflow after the zoom and any in-flight
+  // content-script processing of newly-loaded cards.
+  await page.waitForTimeout(3000);
 }
 
 // 0) Before — extension paused, clickbait shows in full glory.
