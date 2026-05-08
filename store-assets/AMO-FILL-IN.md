@@ -178,6 +178,27 @@ WHAT THE EXTENSION DOES, MECHANICALLY
 - It applies a CSS class on the renderer element to dim or hide it.
 - That's it. Nothing else.
 
+ABOUT THE TWO "Unsafe assignment to innerHTML" WARNINGS
+- These come from line 37 of the popup bundle
+  (assets/index.html-*.js), which is React 18's property-name
+  REGISTRY — a static string array containing every DOM property name
+  React knows about: "children dangerouslySetInnerHTML defaultValue
+  defaultChecked innerHTML suppressContentEditableWarning ...". The
+  word "innerHTML" appears here as a STRING LITERAL inside a property
+  table, not as an actual `node.innerHTML = userInput` assignment.
+- Our own source has ZERO occurrences of innerHTML / outerHTML /
+  insertAdjacentHTML / dangerouslySetInnerHTML — verifiable with
+  `grep -rE 'innerHTML|outerHTML|dangerouslySetInnerHTML' src/`
+  on the source ZIP. This is also documented as finding S-01 in
+  docs/SECURITY-AUDIT.md.
+- The popup is a tiny React app (toggles, slider, lists) that only
+  uses standard JSX (no dangerouslySetInnerHTML, no string-to-DOM
+  templating). No user-controlled HTML is ever rendered.
+- These warnings are a known false positive of the AMO static
+  validator on every React-based extension. We left React in for
+  V0; if a reviewer requires the warning to disappear, we'll migrate
+  the popup to Preact (compat alias, no API change) in a follow-up.
+
 PRIVACY POLICY
 https://bist0uille.github.io/sanitytv/PRIVACY.html
 
