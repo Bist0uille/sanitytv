@@ -28,7 +28,10 @@ await fs.mkdir(userDataDir, { recursive: true });
 
 const CLICKBAIT_URL =
   'https://www.youtube.com/results?search_query=TOP+10+SHOCKING+DESTROYS';
-const ZOOM = '0.75';
+// Aggressive zoom — at 0.6 we get ~4 cards per row and 3 visible rows
+// in the 1280x800 frame, plus the full Shorts shelf at the top. The
+// before/after delta then shows a wall of clickbait melting away.
+const ZOOM = '0.6';
 
 console.log('▶ Launching Chromium with the extension…');
 
@@ -107,13 +110,15 @@ async function loadYouTubeAndZoom(url) {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await page.waitForTimeout(7000);
-  // Zoom out so more cards fit in the 1280x800 frame — makes the
-  // before/after delta visually obvious.
+  // Zoom out aggressively so the wall of clickbait (Shorts shelf +
+  // multiple rows of thumbnails) is visible in a single frame. The
+  // body.style.zoom CSS property is Chromium-specific and works
+  // exactly like the user pressing Ctrl+- a few times.
   await page.evaluate((z) => {
     document.body.style.zoom = z;
   }, ZOOM);
-  // Scroll a bit past the Shorts shelf so the main grid is the focus.
-  await page.evaluate(() => window.scrollBy(0, 700));
+  // Stay at the top of the page so the loud Shorts shelf is included
+  // — that's where the visceral thumbnails live.
   await page.waitForTimeout(2500);
 }
 

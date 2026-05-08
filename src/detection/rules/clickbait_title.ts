@@ -17,6 +17,18 @@ const CLICKBAIT_KEYWORDS_EN = [
   'unbelievable',
   'epic fail',
   'epic win',
+  // shock adjectives observed in real YouTube clickbait that the
+  // baseline list missed
+  'disturbing',
+  'terrifying',
+  'horrifying',
+  'creepy',
+  'freaky',
+  'scariest',
+  'deadliest',
+  'chilling',
+  'brutal',
+  'savage',
 ];
 
 const CLICKBAIT_KEYWORDS_FR = [
@@ -37,6 +49,14 @@ const CLICKBAIT_KEYWORDS_FR = [
   'pète les plombs',
   'choque tout le monde',
   'dérapage',
+  'terrifiant',
+  'terrifiante',
+  'horrifiant',
+  'horrifiante',
+  'effrayant',
+  'effrayante',
+  'glaçant',
+  'glaçante',
 ];
 
 const CLICKBAIT_KEYWORDS = [...CLICKBAIT_KEYWORDS_EN, ...CLICKBAIT_KEYWORDS_FR];
