@@ -1,0 +1,123 @@
+=== SanityTV logs ===
+[log] [SanityTV] content script booting on https://www.youtube.com/results?search_query=TOP+10+SHOCKING+DESTROYS
+[log] [SanityTV] settings loaded {"enabled":true,"sensitivity":50,"whitelist":[],"blacklist":[]}
+[log] [SanityTV] hide score=65 | Top 10 Shocking Scandal Moments | clickbait_title:40,rage_bait:25
+[log] [SanityTV] grey score=40 | Top 30 Most Shocking TV Deaths Ever | clickbait_title:40
+[log] [SanityTV] grey score=55 | Top Fails That Backfired HARD 🤣 | brainrot_structural:55
+[log] [SanityTV] grey score=55 | Ranking the Most Mind Blowing Kitchen Fails in History | brainrot_structural:55
+[log] [SanityTV] grey score=55 | One of the most extreme chokeslams ever! #WWEBacklash | brainrot_structural:55
+[log] [SanityTV] hide score=80 | 10 Years of Explosions 💥 The Most Terrifying Hydraulic Pres | clickbait_title:25,brainrot_structural:55
+[log] [SanityTV] hide score=80 | 10 Scariest Lightning Strikes Caught On Camera ⛈️🔥 | clickbait_title:25,brainrot_structural:55
+[log] [SanityTV] hide score=100 | Shocking❗ An ORCA whale hits 3 surfers! 😱 | clickbait_title:50,brainrot_structural:55
+[log] [SanityTV] hide score=80 | WWE Top 30 Shocking Returns To Destroy Groups | clickbait_title:40,rage_bait:40
+[log] [SanityTV] grey score=55 | Top 15 Most SHOCKING Deaths in The Boys | clickbait_title:55
+[log] [SanityTV] grey score=40 | Top 10 Shocking Moments from The Traitors | clickbait_title:40
+[log] [SanityTV] grey score=55 | Snake gets a taste of electric #snake #electric #shock #shor | brainrot_structural:55
+[log] [SanityTV] hide score=95 | Top 5 Most Shocking Creature Phenomena In The World 😱🫣 | clickbait_title:40,brainrot_structural:55
+[log] [SanityTV] hide score=80 | Shocking Lion After Intense Battle | clickbait_title:25,brainrot_structural:55
+[log] [SanityTV] hide score=80 | When SMALL Guys Destroyed BIG Fighters! (SHOCKING KOs) | clickbait_title:40,rage_bait:40
+[log] [SanityTV] hide score=60 | 10 MINUTES OF STREAMERS SHOCKED BY SHROUDS INSANE MOMENTS | clickbait_title:60
+[log] [SanityTV] hide score=80 | Porch Cam Captures Massive Man Blown Away by Tornado 🌪️😬 # | clickbait_title:25,brainrot_structural:55
+[log] [SanityTV] hide score=65 | 10 Shocking Ways You DESTROY Your Testosterone | clickbait_title:25,rage_bait:40
+[log] [SanityTV] grey score=55 | Megachurch Pastor Disturbing Footage 😲 #god #bible #jesus # | brainrot_structural:55
+[log] [SanityTV] grey score=40 | Top 10 Shocking Moments | Max Amini | Stand Up Comedy | clickbait_title:40
+[log] [SanityTV] grey score=40 | Top 10 Shocking Deaths From Law & Order: SVU | clickbait_title:40
+
+=== Other errors ===
+Failed to load resource: the server responded with a status of 403 ()
+
+=== Probe ===
+{
+  "videoCount": 24,
+  "taggedCount": 21,
+  "hiddenCount": 11,
+  "greyCount": 10,
+  "hasStyleTag": true,
+  "url": "https://www.youtube.com/results?search_query=TOP+10+SHOCKING+DESTROYS",
+  "sample": [
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Top 10 Shocking Scandal Moments",
+      "channel": "MsMojo",
+      "sanitytv": "hide",
+      "reason": "clickbait title + rage bait"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Top 30 Most Shocking TV Deaths Ever",
+      "channel": "MsMojo",
+      "sanitytv": "grey",
+      "reason": "clickbait title"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Shocking❗ An ORCA whale hits 3 surfers! 😱",
+      "channel": "Aquarius shorts",
+      "sanitytv": "hide",
+      "reason": "clickbait title + brainrot structural"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "10 Most Shocking Deaths in Sports History",
+      "channel": "ECHOES",
+      "sanitytv": null,
+      "reason": null
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "WWE Top 30 Shocking Returns To Destroy Groups",
+      "channel": "All Elite Punk",
+      "sanitytv": "hide",
+      "reason": "clickbait title + rage bait"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "10 Shocking Natural Disasters Caught On Camera",
+      "channel": "Underworld",
+      "sanitytv": null,
+      "reason": null
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Top 15 Most SHOCKING Deaths in The Boys",
+      "channel": "WatchMojo.com",
+      "sanitytv": "grey",
+      "reason": "clickbait title"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Top 10 Shocking Moments from The Traitors",
+      "channel": "MsMojo",
+      "sanitytv": "grey",
+      "reason": "clickbait title"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "10 Shocking Tornado Moments Caught on Camera",
+      "channel": "Underworld",
+      "sanitytv": null,
+      "reason": null
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Snake gets a taste of electric #snake #electric #shock #shorts #shorts2023 #craz",
+      "channel": "Interestingvideos",
+      "sanitytv": "grey",
+      "reason": "brainrot structural"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Top 5 Most Shocking Creature Phenomena In The World 😱🫣",
+      "channel": "FlashSlice",
+      "sanitytv": "hide",
+      "reason": "clickbait title + brainrot structural"
+    },
+    {
+      "tag": "ytd-video-renderer",
+      "title": "Shocking Lion After Intense Battle",
+      "channel": "Latest Sightings",
+      "sanitytv": "hide",
+      "reason": "clickbait title + brainrot structural"
+    }
+  ]
+}

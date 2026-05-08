@@ -11,19 +11,19 @@ const COMBINED_SELECTOR = VIDEO_SELECTORS.join(',');
 
 export type VideoCallback = (element: Element) => void;
 
+/**
+ * Observes the page for video renderer elements and invokes `onVideo` for each
+ * one as it appears. The callback is responsible for its own deduplication
+ * (e.g. via a data attribute set after successful processing) — we deliberately
+ * do not dedupe here, because YouTube renders the renderer shell *before* its
+ * title is populated, and we need the chance to retry once the metadata lands.
+ */
 export function observeVideos(onVideo: VideoCallback): () => void {
-  const seen = new WeakSet<Element>();
-
   const visit = (root: ParentNode) => {
     const elements = root.querySelectorAll(COMBINED_SELECTOR);
-    for (const el of Array.from(elements)) {
-      if (seen.has(el)) continue;
-      seen.add(el);
-      onVideo(el);
-    }
+    for (const el of Array.from(elements)) onVideo(el);
   };
 
-  // Initial pass on whatever's already rendered.
   visit(document);
 
   let scheduled = false;
@@ -34,10 +34,7 @@ export function observeVideos(onVideo: VideoCallback): () => void {
     while (queue.length > 0) {
       const node = queue.shift()!;
       if (!(node instanceof Element)) continue;
-      if (node.matches(COMBINED_SELECTOR) && !seen.has(node)) {
-        seen.add(node);
-        onVideo(node);
-      }
+      if (node.matches(COMBINED_SELECTOR)) onVideo(node);
       visit(node);
     }
   };

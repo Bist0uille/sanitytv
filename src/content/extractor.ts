@@ -67,13 +67,19 @@ export function extractMetadata(element: Element): VideoMetadata | null {
   const durationSeconds = durationEl ? parseDuration(extractText(durationEl)) : undefined;
 
   const linkEl = querySelectorFirst(element, VIDEO_LINK_SELECTORS) as HTMLAnchorElement | null;
-  const videoId =
-    extractVideoId(linkEl?.getAttribute('href') ?? null) ?? `nohref-${Date.now()}-${Math.random()}`;
+  const linkHref = linkEl?.getAttribute('href') ?? null;
+  const videoId = extractVideoId(linkHref) ?? `nohref-${Date.now()}-${Math.random()}`;
 
-  // Detect Shorts via the renderer tag itself.
+  // Detect Shorts via either:
+  // 1. The renderer tag is Shorts-specific (Shorts shelf / lockup), or
+  // 2. The PRIMARY link of this card points to /shorts/.
+  // We deliberately do NOT scan the entire subtree for /shorts/ links — search
+  // result cards often embed unrelated Shorts links elsewhere in their markup.
+  const tag = element.tagName.toLowerCase();
   const isShort =
-    element.tagName.toLowerCase().includes('shorts') ||
-    !!element.querySelector('a[href^="/shorts/"]');
+    tag === 'ytm-shorts-lockup-view-model' ||
+    tag === 'ytd-reel-item-renderer' ||
+    (linkHref?.startsWith('/shorts/') ?? false);
 
   return {
     videoId,

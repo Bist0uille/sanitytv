@@ -13,12 +13,35 @@ import { applyAction, ensureStyles } from './injector';
 import { observeVideos } from './observer';
 import { extractMetadata } from './extractor';
 
-const log = (...args: unknown[]) => console.log('[SanityTV]', ...args);
-const warn = (...args: unknown[]) => console.warn('[SanityTV]', ...args);
+const DIAG_KEY = 'sanitytv:diag';
+
+function diag(line: string) {
+  try {
+    const existing = sessionStorage.getItem(DIAG_KEY);
+    const arr = existing ? (JSON.parse(existing) as string[]) : [];
+    arr.push(`${new Date().toISOString().slice(11, 23)} ${line}`);
+    if (arr.length > 200) arr.shift();
+    sessionStorage.setItem(DIAG_KEY, JSON.stringify(arr));
+  } catch {
+    /* sessionStorage may be blocked on some pages */
+  }
+}
+
+const log = (...args: unknown[]) => {
+  const s = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+  console.log('[SanityTV]', s);
+  diag(`LOG ${s}`);
+};
+const warn = (...args: unknown[]) => {
+  const s = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+  console.warn('[SanityTV]', s);
+  diag(`WARN ${s}`);
+};
 
 let currentSettings: Settings = DEFAULT_SETTINGS;
 let processed = 0;
 let masked = 0;
+let observed = 0;
 
 async function bootstrap() {
   log('content script booting on', location.href);
@@ -33,16 +56,18 @@ async function bootstrap() {
     });
 
     observeVideos((el) => {
+      observed += 1;
       try {
         if (!currentSettings.enabled) return;
+        if (el.getAttribute('data-sanitytv-checked') === '1') return;
+
         const metadata = extractMetadata(el);
-        processed += 1;
         if (!metadata) {
-          if (processed <= 3) {
-            warn('no metadata extracted from element', el.tagName, el);
-          }
+          if (observed <= 3) diag(`OBS no-metadata ${el.tagName}`);
           return;
         }
+        el.setAttribute('data-sanitytv-checked', '1');
+        processed += 1;
 
         if (isWhitelisted(currentSettings, metadata.channelName)) {
           applyAction(el, 'normal');
@@ -52,7 +77,7 @@ async function bootstrap() {
           applyAction(el, 'hide');
           masked += 1;
           void incrementStat('hidden');
-          log('blacklisted →', metadata.channelName, '|', metadata.title);
+          log('blacklisted', metadata.channelName, '|', metadata.title);
           return;
         }
 
@@ -67,33 +92,30 @@ async function bootstrap() {
           if (action === 'hide') void incrementStat('hidden');
           else void incrementStat('greyed');
           log(
-            `${action} (score=${scored.score})`,
+            `${action} score=${scored.score}`,
             '|',
-            metadata.title.slice(0, 80),
+            metadata.title.slice(0, 60),
             '|',
-            scored.signals.map((s) => `${s.kind}:${s.contribution}`).join(', '),
+            scored.signals.map((s) => `${s.kind}:${s.contribution}`).join(','),
           );
         } else if (processed <= 5) {
-          // Log a few "kept" examples for diagnostic visibility on first paint.
-          log(`kept (score=${scored.score})`, '|', metadata.title.slice(0, 80));
+          log(`kept score=${scored.score}`, '|', metadata.title.slice(0, 60));
         }
       } catch (err) {
-        warn('per-video error', err);
+        warn('per-video error', String(err));
       }
     });
 
-    setTimeout(() => {
-      log(`summary: processed=${processed} masked=${masked}`);
-    }, 4000);
+    setInterval(() => {
+      diag(`STATS observed=${observed} processed=${processed} masked=${masked}`);
+    }, 2000);
   } catch (err) {
-    warn('bootstrap fatal', err);
+    warn('bootstrap fatal', String(err));
   }
 }
 
 void bootstrap();
 
-// CRXJS loader expects an onExecute export; making it a no-op satisfies the
-// dynamic-import protocol and keeps the side-effect bootstrap above.
 export function onExecute(): void {
-  // intentionally empty — bootstrap already ran on module evaluation
+  // intentionally empty
 }

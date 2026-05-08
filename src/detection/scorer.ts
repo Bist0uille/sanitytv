@@ -13,9 +13,12 @@ export function scoreVideo(video: VideoMetadata, rules: ReadonlyArray<Rule>): Sc
     })
     .filter((signal) => signal.contribution > 0);
 
-  const totalWeight = rules.reduce((sum, rule) => sum + rule.weight, 0) || 1;
-  const weightedSum = signals.reduce((sum, s) => sum + s.contribution, 0);
-  const score = clamp(Math.round(weightedSum / totalWeight), 0, 100);
+  // Aggregate by SUM (capped at 100), not weighted mean. Weighted mean dilutes
+  // a single screaming signal across rules that didn't fire and makes the
+  // overall score too lenient. Each rule already self-caps to 100, so a
+  // single very strong signal alone can still push the video past hideAt.
+  const sum = signals.reduce((acc, s) => acc + s.contribution, 0);
+  const score = clamp(Math.round(sum), 0, 100);
 
   return { ...video, score, signals };
 }
