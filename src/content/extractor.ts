@@ -86,5 +86,6 @@ export function extractMetadata(element: Element): VideoMetadata | null {
     title,
     channelName,
     durationSeconds: isShort ? (durationSeconds ?? 30) : durationSeconds,
+    isShort,
   };
 }

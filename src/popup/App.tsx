@@ -78,6 +78,23 @@ export function App() {
       </section>
 
       <section className="popup__section">
+        <h2 className="popup__h2">Shorts</h2>
+        <label className="popup__toggle">
+          <input
+            type="checkbox"
+            checked={settings.hideShortsCompletely}
+            onChange={(e) => void update({ hideShortsCompletely: e.target.checked })}
+            aria-label="Hide all Shorts"
+          />
+          <span>Hide all Shorts (regardless of score)</span>
+        </label>
+        <p className="popup__hint">
+          Off by default — a Short alone is not flagged. Turn this on to hide every short-form
+          video, even from creators you trust.
+        </p>
+      </section>
+
+      <section className="popup__section">
         <h2 className="popup__h2">Channel lists</h2>
         <ChannelListEditor
           label="Always show (whitelist)"

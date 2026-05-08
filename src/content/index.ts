@@ -80,6 +80,12 @@ async function bootstrap() {
           log('blacklisted', metadata.channelName, '|', metadata.title);
           return;
         }
+        if (currentSettings.hideShortsCompletely && metadata.isShort) {
+          applyAction(el, 'hide');
+          masked += 1;
+          void incrementStat('hidden');
+          return;
+        }
 
         const scored = scoreVideo(metadata, allRules);
         const thresholds = thresholdsFromSensitivity(currentSettings.sensitivity);

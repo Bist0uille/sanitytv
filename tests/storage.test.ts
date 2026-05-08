@@ -50,3 +50,9 @@ describe('whitelist / blacklist matching', () => {
     expect(isBlacklisted(DEFAULT_SETTINGS, 'whatever')).toBe(false);
   });
 });
+
+describe('default settings', () => {
+  it('disables hideShortsCompletely by default', () => {
+    expect(DEFAULT_SETTINGS.hideShortsCompletely).toBe(false);
+  });
+});

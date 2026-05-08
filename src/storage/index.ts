@@ -5,6 +5,7 @@ export interface Settings {
   sensitivity: number;
   whitelist: string[];
   blacklist: string[];
+  hideShortsCompletely: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -12,6 +13,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sensitivity: 50,
   whitelist: [],
   blacklist: [],
+  hideShortsCompletely: false,
 };
 
 export interface Stats {

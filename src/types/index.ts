@@ -11,6 +11,7 @@ export interface VideoMetadata {
   channelId?: string;
   durationSeconds?: number;
   thumbnailUrl?: string;
+  isShort?: boolean;
 }
 
 export interface ScoredVideo extends VideoMetadata {
