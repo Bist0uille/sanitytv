@@ -1,87 +1,82 @@
 # Chrome Web Store submission — checklist
 
-This folder contains everything needed to submit SanityTV to the Chrome
-Web Store. Follow the steps in order; each one tells you exactly what
-to copy/paste into the developer console form.
+This folder contains everything needed to submit (and update) SanityTV
+on the Chrome Web Store. Every text field is in
+[`listing.md`](./listing.md). Visual assets sit next to it.
 
 ## Contents
 
 ```
 store-assets/
-├── README.md                    ← this file
-├── listing.md                   ← all the text fields (title, descriptions, justifications)
-├── promo-440x280.png            ← the small promotional tile
+├── README.md                ← this file (the workflow)
+├── listing.md               ← every text field, EN + FR, ready to paste
+├── logo.png                 ← canonical brand logo (1254×1254)
+├── promo-440x280.png        ← small promotional tile
 └── screenshots/
-    ├── 01-clickbait-filtered.png       ← grid showing greyed clickbait
-    ├── 02-clickbait-deeper.png         ← scrolled view, more variety
-    ├── 03-popup-ui.png                 ← the popup UI in full
-    └── 04-creators-respected.png       ← Veritasium untouched
+    ├── 00-clickbait-before.png        ← raw YouTube clickbait wall
+    ├── 01-clickbait-after.png         ← same query with the extension on
+    └── 03-popup-ui.png                ← popup with all controls
 ```
 
-Regenerate any of them at will:
+To regenerate any asset:
 
-```
+```bash
 npm run build
 node scripts/generate_screenshots.mjs
 python3 scripts/generate_promo_tile.py
+python3 scripts/generate_icons.py
 ```
 
 ---
 
 ## Step 0 — Pre-flight
 
-- [ ] `npm test` — must be green (123/123)
-- [ ] `npm run build` — `dist/` rebuilt and lint/typecheck green
-- [ ] `node scripts/regression-test.mjs` — must end on `16/18 queries pass`
-- [ ] Verify `dist/manifest.json` has `version` matching the value you
-      want to ship (currently `0.0.1` — bump if you've already
-      published this version)
+- [ ] `npm test` — must be green (130/130).
+- [ ] `npm run build` — `dist/` rebuilt, lint and typecheck clean.
+- [ ] `node scripts/regression-test.mjs` — must end on `16/18 queries pass`.
+- [ ] `dist/manifest.json` `version` matches what you want to ship
+      (currently **0.0.3**, bump in `package.json` if you've already
+      published this exact version).
+- [ ] [`docs/SECURITY-AUDIT.md`](../docs/SECURITY-AUDIT.md) verdict
+      reads **GO**.
 
 ---
 
-## Step 1 — Activate GitHub Pages for the privacy policy URL
+## Step 1 — Privacy policy URL (already live)
 
-The Chrome Web Store needs a publicly hosted privacy policy URL. The
-cleanest way is to enable Pages on the repo:
+GitHub Pages is enabled on the `/docs` source. The privacy policy is
+served at:
 
-1. Go to <https://github.com/Bist0uille/sanitytv/settings/pages>
-2. Source: **Deploy from a branch**
-3. Branch: `main`, folder: `/docs`
-4. Save
-5. After a minute, the policy will be live at
-   `https://bist0uille.github.io/sanitytv/PRIVACY.html`
+> **`https://bist0uille.github.io/sanitytv/PRIVACY.html`**
 
-> Note: GitHub serves Markdown as HTML automatically when Pages is
-> enabled with the docs folder source. If for any reason it serves
-> raw markdown, copy `docs/PRIVACY.md` to `docs/PRIVACY.html` wrapped
-> in a minimal HTML shell — but the default usually just works.
+Verified `HTTP/2 200` on 2026-05-08. Paste this URL into the developer
+console when asked.
 
-If you don't want to enable Pages right now, the GitHub blob URL is
-also accepted in practice:
-`https://github.com/Bist0uille/sanitytv/blob/main/docs/PRIVACY.md`
+If you ever need to change the policy, edit `docs/PRIVACY.md` on
+`main` and Pages auto-redeploys within ~60 seconds.
 
 ---
 
-## Step 2 — Create the developer account
+## Step 2 — Create the developer account (one-time)
 
-1. Go to <https://chrome.google.com/webstore/devconsole>
-2. Sign in with the Google account you want to own the extension
-3. Pay the one-time **5 USD** developer registration fee
-4. Verify your contact email when prompted
+1. Open <https://chrome.google.com/webstore/devconsole>.
+2. Sign in with the Google account that should own the extension.
+3. Pay the one-time **5 USD** registration fee.
+4. Confirm your contact email.
 
 ---
 
 ## Step 3 — Package the extension
 
-1. Run `npm run build`
-2. Compress the `dist/` directory contents into a ZIP:
-   ```
-   cd dist
-   zip -r ../sanitytv-v0.0.1.zip .
-   cd ..
-   ```
-3. Confirm the zip contains `manifest.json` at its root, **not** a
-   `dist/` subfolder (Chrome rejects nested zips)
+```bash
+npm run build
+cd dist
+zip -r ../sanitytv-v0.0.3.zip .
+cd ..
+```
+
+The ZIP must contain `manifest.json` at its root, **not** inside a
+`dist/` subfolder. Chrome rejects nested zips.
 
 ---
 
@@ -89,51 +84,53 @@ also accepted in practice:
 
 In the developer console:
 
-1. Click **Add new item**
-2. Upload `sanitytv-v0.0.1.zip`
-3. Fill in the **Store listing** tab using `listing.md` for every field:
+1. Click **Add new item**.
+2. Upload `sanitytv-v0.0.3.zip`.
+3. Fill in the **Store listing** tab using
+   [`listing.md`](./listing.md):
    - Extension name
    - Short description (EN + FR)
    - Detailed description (EN + FR)
    - Category: **Productivity**
-   - Language: **English** (primary)
-4. Upload assets:
+   - Language: **English** (primary), French (secondary)
+4. Upload visual assets:
    - **Small promo tile**: `store-assets/promo-440x280.png`
-   - **Screenshots** (1280x800): the four files in `store-assets/screenshots/`
-5. Privacy policy URL: paste the URL from Step 1
-6. Support email: paste your support email
-7. Homepage URL: `https://github.com/Bist0uille/sanitytv`
+   - **Screenshots** (1280×800), 3 frames in `store-assets/screenshots/`
+5. **Privacy policy URL**:
+   `https://bist0uille.github.io/sanitytv/PRIVACY.html`
+6. **Support email**: pick a dedicated alias rather than your personal
+   Gmail.
+7. **Homepage URL**: `https://github.com/Bist0uille/sanitytv`
 
 ---
 
 ## Step 5 — Privacy practices
 
-In the **Privacy practices** tab:
+In the **Privacy practices** tab, copy the values from
+[`listing.md`](./listing.md):
 
-- Single purpose: copy from `listing.md` ("Single Purpose" section)
-- For each requested permission, paste the matching justification
-  from `listing.md` ("Permission justifications" section):
-  - `storage`
-  - `host_permissions: *://*.youtube.com/*`
-  - `background.service_worker`
-- Data usage: see the "Privacy practices declarations" table in
-  `listing.md`. **All "Yes/No" answers should be "No"** — the
-  extension does not collect anything.
-- Confirm **the extension does not transmit any data** off-device
-- Confirm **the extension does not sell user data**
-- Confirm **the extension does not use user data for unrelated
-  purposes**
+- **Single purpose** — paste the one-sentence statement.
+- **Permission justifications** — paste the per-permission text for
+  `storage` and `host_permissions: *://*.youtube.com/*`.
+- **Data usage table** — every checkbox is **No**. We do not collect
+  anything.
+- Confirm:
+  - Does NOT transmit data off-device.
+  - Does NOT sell user data.
+  - Does NOT use data for unrelated purposes.
+
+If a reviewer challenges any of these later, point them at
+[`docs/SECURITY-AUDIT.md`](../docs/SECURITY-AUDIT.md), which verifies
+each claim against the production bundle.
 
 ---
 
 ## Step 6 — Distribution
 
-In the **Distribution** tab:
-
-- Visibility: **Public** (or **Unlisted** for a soft launch — you can
-  flip it later without re-review)
-- Geographic distribution: **All regions**
-- Pricing: **Free**
+- **Visibility**: **Public** (or **Unlisted** for a soft launch — you
+  can flip later without re-review).
+- **Geographic distribution**: **All regions**.
+- **Pricing**: **Free**.
 
 ---
 
@@ -141,40 +138,81 @@ In the **Distribution** tab:
 
 Click **Submit for review** at the top of the dashboard.
 
-Typical review time: 1 to 7 days. Google may email you with questions.
-Common follow-ups:
+Typical review: **1 to 7 days**. Google may email follow-up
+questions. Common ones and how to answer:
 
-- Asking why you need `host_permissions` for YouTube → the answer is
-  already in `listing.md`, paste it
-- Asking for clarifications on what data you read → "We read titles,
-  channel names and durations of videos shown on the page; we do not
-  store, transmit, or sell any of this data; everything happens
-  in-memory"
-- Asking for the privacy policy URL → resend the GitHub Pages URL
+| Question                                                    | Answer                                                                                                                                                            |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Why does the extension need `host_permissions` for YouTube? | Paste the `host_permissions` justification from `listing.md`.                                                                                                     |
+| What data is read?                                          | "Visible video titles, channel names, and durations on YouTube pages, processed in memory and never stored or transmitted. See PRIVACY.md and SECURITY-AUDIT.md." |
+| Is anything sent to a server?                               | "No. The extension makes zero network calls. Verified at the bundle level in SECURITY-AUDIT.md."                                                                  |
+| Where is the privacy policy?                                | `https://bist0uille.github.io/sanitytv/PRIVACY.html`                                                                                                              |
 
 ---
 
-## Common rejection causes (and how we avoid them)
+## Common rejection causes (and how we mitigate them)
 
-| Cause                        | Status                                                                  |
-| ---------------------------- | ----------------------------------------------------------------------- |
-| Single purpose unclear       | ✅ Documented in listing                                                |
-| Excessive permissions        | ✅ Only `storage` + YouTube host                                        |
-| Remote code execution        | ✅ Everything is bundled, no `eval`, no remote scripts                  |
-| Obfuscated source            | ✅ Unminified TypeScript + readable bundle                              |
-| Missing privacy policy       | ✅ Hosted on GitHub Pages                                               |
-| False data-usage declaration | ✅ Truthful: nothing collected                                          |
-| Trademark misuse             | ✅ "SanityTV" doesn't include "YouTube"; description says "for YouTube" |
-| Misleading functionality     | ✅ Description matches what the extension actually does                 |
+| Cause                        | Status                                             |
+| ---------------------------- | -------------------------------------------------- |
+| Single purpose unclear       | ✅ Stated in listing + manifest description        |
+| Excessive permissions        | ✅ Only `storage` + YouTube host                   |
+| Remote code execution        | ✅ No `eval`, no remote scripts (audit S-01)       |
+| Obfuscated source            | ✅ Unminified, audit-able bundle                   |
+| Missing privacy policy       | ✅ Hosted on GitHub Pages                          |
+| False data-usage declaration | ✅ Audit verifies all "No" answers (S-02)          |
+| Trademark misuse             | ✅ "SanityTV" name; description says "for YouTube" |
+| Misleading functionality     | ✅ Description matches behaviour exactly           |
 
 ---
 
 ## After publication
 
-- [ ] Tag the GitHub release: `git tag v0.0.1 && git push --tags`
-- [ ] Add the Web Store install link to the README
-- [ ] Open issue templates are already set up in `.github/`
-- [ ] Optionally announce on relevant communities (HN, Reddit r/chrome,
-      r/digitalminimalism, French dev twitter)
-- [ ] Plan v0.1.0: keyword expansion based on real user reports +
-      Phase 2 ML if needed
+- [ ] Tag the release: `git tag v0.0.3 && git push --tags`
+- [ ] Replace "coming soon" in the root README with the store URL
+- [ ] Watch GitHub Issues for early feedback (templates already exist
+      in `.github/ISSUE_TEMPLATE/`)
+- [ ] Optionally share on r/chrome, r/digitalminimalism, FR tech
+      Mastodon / Twitter
+- [ ] Plan v0.0.4 from real-user reports
+
+---
+
+## Updating later (subsequent releases)
+
+The cycle for any future release:
+
+```bash
+# 1. Code, test, lint
+npm test && npm run build
+
+# 2. Bump version (semver)
+npm version patch        # 0.0.3 → 0.0.4
+#  ^ bumps package.json + commits + tags automatically
+
+# 3. Re-build (the manifest reads pkg.version)
+npm run build
+
+# 4. Re-zip
+cd dist && zip -r ../sanitytv-v0.0.4.zip . && cd ..
+
+# 5. Push the tag and any code changes
+git push --follow-tags
+
+# 6. In the dev console:
+#    - Open the existing extension (NOT "Add new item")
+#    - Tab "Package" → "Upload new package"
+#    - Drop sanitytv-v0.0.4.zip
+#    - Fill "What's new" with a one-line changelog
+#    - Submit for review
+```
+
+Rules to keep in mind:
+
+- The `manifest.json` `version` MUST strictly increase. Chrome rejects
+  re-uploads with the same or a lower version.
+- Listing-only changes (description, screenshots, tagline) don't need
+  a code re-upload — edit the **Store listing** tab and resubmit.
+- Adding or removing permissions triggers a longer re-review (up to
+  two weeks). Justify the change in the "What's new" field.
+- For risky updates, enable **Partial publishing** (slider 0-100%) to
+  staged-rollout the update.

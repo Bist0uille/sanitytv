@@ -218,15 +218,11 @@ For "Has this extension ever sent or sold data to a third party": **No**.
 
 ## Privacy policy URL
 
-`https://bist0uille.github.io/sanitytv/PRIVACY.html`
-(after enabling GitHub Pages — instructions in `store-assets/README.md`)
+**`https://bist0uille.github.io/sanitytv/PRIVACY.html`**
 
-Alternative if GitHub Pages is not enabled yet:
-`https://github.com/Bist0uille/sanitytv/blob/main/docs/PRIVACY.md`
-
-The Chrome Web Store accepts the GitHub blob URL in practice but
-strongly prefers a hosted page. Pages activation is a one-click step
-in the GitHub repo settings.
+GitHub Pages is live with the `/docs` source. Verified `HTTP/2 200`
+on 2026-05-08. Paste this URL into the "Privacy policy URL" field of
+the developer console.
 
 ---
 
@@ -240,11 +236,11 @@ contact form).
 
 ## Promotional fields
 
-| Field              | Size                  | Status                           |
-| ------------------ | --------------------- | -------------------------------- |
-| Small promo tile   | 440x280               | `store-assets/promo-440x280.png` |
-| Marquee promo tile | 1400x560              | optional, can skip               |
-| Screenshots        | 1280x800 (or 640x400) | `store-assets/screenshots/*.png` |
+| Field              | Size     | Status                                                                                                                            |
+| ------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Small promo tile   | 440x280  | `store-assets/promo-440x280.png`                                                                                                  |
+| Marquee promo tile | 1400x560 | optional, can skip                                                                                                                |
+| Screenshots        | 1280x800 | `store-assets/screenshots/00-clickbait-before.png`, `01-clickbait-after.png`, `03-popup-ui.png` (3 frames; 1-5 allowed by Chrome) |
 
 ---
 

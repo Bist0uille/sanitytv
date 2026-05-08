@@ -34,3 +34,6 @@ yarn-error.log*
 /screenshot/
 /screenshots/
 diagnose-output/
+
+# Built submission artifacts (regenerated locally before each upload)
+sanitytv-v*.zip
