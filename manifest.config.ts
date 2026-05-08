@@ -33,4 +33,10 @@ export default defineManifest({
   ],
   permissions: ['storage'],
   host_permissions: ['*://*.youtube.com/*'],
+  // Explicit CSP for extension pages (popup). MV3 already enforces a
+  // strict default; declaring it here is a transparency signal to
+  // reviewers that we never load remote scripts and never use eval.
+  content_security_policy: {
+    extension_pages: "script-src 'self'; object-src 'self';",
+  },
 });

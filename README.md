@@ -86,12 +86,16 @@ Click the SanityTV icon in your toolbar to open the controls:
 
 ---
 
-## Privacy
+## Privacy & security
 
 SanityTV does not collect, transmit, or sell any data. The full
 [privacy policy](./docs/PRIVACY.md) explains exactly what the
 extension reads (visible video titles, channel names and durations on
 YouTube pages, never written to disk and never sent anywhere).
+
+A [security audit](./docs/SECURITY-AUDIT.md) of the v0.0.3 codebase is
+checked into the repo: zero remote code, zero network calls, zero
+runtime-dependency vulnerabilities, narrow permission scope.
 
 The extension only requests two permissions:
 

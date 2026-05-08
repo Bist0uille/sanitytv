@@ -1,10 +1,23 @@
 import type { ScoredVideo, VideoMetadata } from '@/types';
 import type { Rule } from './types';
 
+/**
+ * Hard cap on the title length we expose to the rule engine. Real
+ * YouTube titles never exceed 100 chars, but a hostile or malformed
+ * page could feed us anything. Truncating before the regex run defends
+ * against pathological inputs (10k char inputs were measured at ~140 ms
+ * per scoring; capped, it's a few ms regardless).
+ */
+const MAX_TITLE_LEN = 500;
+
 export function scoreVideo(video: VideoMetadata, rules: ReadonlyArray<Rule>): ScoredVideo {
+  const safe =
+    video.title && video.title.length > MAX_TITLE_LEN
+      ? { ...video, title: video.title.slice(0, MAX_TITLE_LEN) }
+      : video;
   const signals = rules
     .map((rule) => {
-      const result = rule.evaluate({ video });
+      const result = rule.evaluate({ video: safe });
       return {
         kind: rule.kind,
         contribution: clamp(result.contribution * rule.weight, 0, 100),

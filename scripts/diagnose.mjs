@@ -112,13 +112,11 @@ await page.waitForTimeout(8000);
 await page.evaluate(() => window.scrollBy(0, 600));
 await page.waitForTimeout(3000);
 
-const diagLogs = await page.evaluate(() => {
-  try {
-    return JSON.parse(sessionStorage.getItem('sanitytv:diag') || '[]');
-  } catch {
-    return [];
-  }
-});
+// The production content script no longer writes to sessionStorage
+// (privacy reason — that storage is readable by the YouTube origin).
+// We rely solely on Playwright's page.on('console') capture, which
+// works fine for content-script logs in recent Chromium versions.
+const diagLogs = sanitytvLogs;
 
 const probe = await page.evaluate(() => {
   const videos = document.querySelectorAll(
