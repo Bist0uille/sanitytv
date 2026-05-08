@@ -37,3 +37,6 @@ diagnose-output/
 
 # Built submission artifacts (regenerated locally before each upload)
 sanitytv-v*.zip
+
+# Local-only credentials, never committed
+.secrets/
