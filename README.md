@@ -1,73 +1,146 @@
 # SanityTV
 
-> A Chrome extension that filters out YouTube videos exploiting
-> attention-engineering patterns: clickbait, rage-bait, brainrot
-> Shorts, sensationalism, and harmful kid content.
+> A clean YouTube. Local. Private. Free.
 
-**Current version:** 0.0.2 (Phase 1 V0, store-ready)
+<!-- Logo: Tim is generating this, replace the next line when ready -->
+<p align="center">
+  <img src="./store-assets/promo-440x280.png" alt="SanityTV" width="440">
+</p>
 
-## Status
+SanityTV is a Chrome extension that automatically removes YouTube
+videos engineered to hijack your attention — clickbait, rage-bait,
+sensationalism, brainrot Shorts, and content harmful to children.
+Your feed stays full of what's actually worth watching.
 
-- 5 detection rules (clickbait_title, rage_bait, brainrot_structural,
-  sensationalism, harmful_kid_content) covering EN + FR
-- 124 unit tests passing
-- 60/60 synthetic regression corpus passing
-- 16/18 empirical regression queries passing (two accepted limitations
-  documented in [ADR-0006](./docs/adr/0006-regression-test-strategy.md))
-- Chrome Web Store submission package ready in
-  [`store-assets/`](./store-assets/) — see its README for the
-  step-by-step submission
+Everything happens inside your browser. Nothing leaves your device.
+No account, no API key, no tracking, no monetisation.
 
-## Why
+---
 
-The YouTube ecosystem optimises for watch time, not for what's good for
-you. Existing extensions like [Unhook](https://unhook.app/) hide UI
-elements (Shorts, sidebar, recommendations) but don't classify the
-content itself. SanityTV combines UI cleaning with **automatic
-multi-signal classification** of the content.
+## See the difference
 
-## Approach
+Search results before SanityTV (a typical clickbait query):
 
-SanityTV scores each video on the YouTube home, search, and sidebar
-using a transparent set of heuristics, then takes one of two actions
-depending on the user's preferred mode:
+> _full of yelling thumbnails, listicles, top-N, "shocking" everything_
 
-- **Default — hide all flagged.** A video that scores past the
-  threshold simply disappears from the feed. You see fewer videos,
-  no badges, no clutter.
-- **Soft mode — opt-in via the popup.** Borderline videos (score
-  30–60) are dimmed with a `⚠ sensational content` badge and stay
-  clickable; only the very high-confidence ones (score ≥ 60) are
-  hidden.
+Same search, with SanityTV active by default:
 
-The scoring engine is identical in both modes — the only difference is
-how borderline matches are presented. See
-[ADR-0003](./docs/adr/0003-three-level-display-not-binary.md) for the
-rationale on why both modes coexist.
+<p align="center">
+  <img src="./store-assets/screenshots/01-clickbait-filtered.png" alt="Clickbait results filtered" width="640">
+</p>
 
-What gets detected (rules under [`src/detection/rules/`](./src/detection/rules/)):
+The cards crossing the threshold disappear silently. You see fewer
+videos, calmer titles, and the genuinely useful ones rise to the top.
 
-- **clickbait_title** — uppercase shouting, listicles ("Top N",
-  "10 Most Shocking …"), "you won't believe", emoji spam, repeated
-  punctuation, screaming words.
-- **rage_bait** — combat verbs ("DESTROYS", "humilié"), culture-war
-  keywords, vs/contre/versus framings, outrage nouns.
-- **brainrot_structural** — Shorts duration, emoji-spam patterns. The
-  Shorts format alone is a soft signal; combined with another rule
-  it tips into hide.
-- **sensationalism** — mystery and hidden-truth phrasings, conspiracy
-  keywords, hyperbolic superlatives, morbid / tragedy keywords for
-  tabloid-style coverage.
-- **harmful_kid_content** — Elsagate co-occurrences (kid character +
-  disturbing word, suppressed by canonical-fiction context like
-  movie/scene/gameplay) and named dangerous challenges (Tide Pod,
-  Blackout, Skull Breaker, …).
+Your favourite serious creators are untouched:
 
-**No API keys**, no backend, no telemetry. Detection runs entirely in
-your browser. See the full
-[privacy policy](./docs/PRIVACY.md).
+<p align="center">
+  <img src="./store-assets/screenshots/04-creators-respected.png" alt="Veritasium results untouched" width="640">
+</p>
 
-## Tech stack
+A search for **veritasium** flags zero out of seventeen videos in our
+empirical test suite. Same story for Kurzgesagt, 3Blue1Brown, Le
+Monde, MKBHD, and Lo-fi Hip Hop Radio.
+
+---
+
+## What gets filtered
+
+| Category                | Examples we hide                                                                                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Clickbait titles**    | _TOP 10 SHOCKING …_, _You won't believe …_, _Vous n'allez pas croire …_, all-caps shouting, emoji spam, ponctuation excessive                                |
+| **Rage-bait**           | _Ben Shapiro DESTROYS …_, _Le ministre HUMILIÉ_, culture-war framings, vs/contre confrontations                                                              |
+| **Sensationalism**      | _The truth they don't want you to know_, _illuminati_, _nouvel ordre mondial_, hyperbolic superlatives, morbid tabloid keywords (viol, meurtre, massacre, …) |
+| **Brainrot Shorts**     | A Short alone is a soft signal — combined with any other clickbait pattern it disappears                                                                     |
+| **Harmful kid content** | _Frozen Elsa pregnant by Spider-Man_-style Elsagate, named dangerous challenges (Tide Pod, Blackout, Skull Breaker, …)                                       |
+
+It works in **English and French** out of the box.
+
+---
+
+## What stays
+
+| Kept (untouched)                                                                        |
+| --------------------------------------------------------------------------------------- |
+| Serious educators (Veritasium, Kurzgesagt, Fouloscopie, …)                              |
+| Real journalism (Le Monde, ARTE, PBS, BBC)                                              |
+| Tutorials, tech reviews, music, vlogs, lifestyle                                        |
+| Academic lectures, even when they cover hard topics (war, atrocities) — context matters |
+| Sport play-by-play and gaming, where combat language is literal                         |
+
+---
+
+## The popup
+
+Click the SanityTV icon in your toolbar to open the controls:
+
+<p align="center">
+  <img src="./store-assets/screenshots/03-popup-ui.png" alt="Popup UI" width="500">
+</p>
+
+- **Active / Paused** — one click to disable filtering on demand.
+- **Sensitivity** — slider from gentle to aggressive. The default 50
+  is the recommended balance.
+- **Activity** — counters of how many videos were hidden (resettable).
+- **Filtering style** — _on by default_: flagged videos disappear
+  outright. Turn it off to get a softer experience: borderline
+  videos are dimmed with a `⚠` badge and stay clickable.
+- **Hide all Shorts** — _off by default_. Turn on to skip every
+  short-form video, even from creators you trust.
+- **Channel lists** — always show some channels (whitelist) or always
+  hide others (blacklist), regardless of the score.
+
+---
+
+## Privacy
+
+SanityTV does not collect, transmit, or sell any data. The full
+[privacy policy](./docs/PRIVACY.md) explains exactly what the
+extension reads (visible video titles, channel names and durations on
+YouTube pages, never written to disk and never sent anywhere).
+
+The extension only requests two permissions:
+
+- `storage` — to keep your settings on your device.
+- `*://*.youtube.com/*` — to inject the filter into YouTube pages
+  (and only YouTube pages).
+
+No other website is touched. No analytics, no third-party SDK, no
+network call.
+
+---
+
+## Install
+
+**From the Chrome Web Store** — coming soon. The submission package is
+ready and the listing is in [`store-assets/`](./store-assets/).
+
+**Manual install (developer mode)** while the store review is pending:
+
+1. Clone the repo and run `npm install`
+2. `npm run build`
+3. Open `chrome://extensions`, enable **Developer mode** (top right)
+4. Click **Load unpacked** and select the `dist/` folder
+
+---
+
+## Roadmap
+
+- [x] **Phase 1** — Detection engine + popup UI
+- [x] **Phase 2** — Quality bar (synthetic + empirical regression
+      suites, 7 ADRs)
+- [x] **Phase 3** — Chrome Web Store submission package ready
+- [ ] **Phase 4** — Publish on the Chrome Web Store
+- [ ] **Phase 5** — Firefox port
+
+---
+
+## For developers
+
+Curious how it works, want to contribute, or want to verify there is
+no funny business in the source? Welcome.
+
+### Tech stack
 
 - TypeScript 5 strict
 - Vite + [`@crxjs/vite-plugin`](https://crxjs.dev/) for Manifest V3
@@ -77,8 +150,6 @@ your browser. See the full
 - ESLint 9 (flat config) + Prettier
 - Husky + lint-staged
 - GitHub Actions (CI: lint, format, typecheck, test, build)
-
-## Development
 
 Requires Node ≥ 20 and npm.
 
@@ -91,41 +162,7 @@ npm run lint
 npm test
 ```
 
-To load the extension in Chrome:
-
-1. `npm run build`
-2. Open `chrome://extensions`
-3. Enable **Developer mode** (top right)
-4. Click **Load unpacked** and select the `dist/` folder
-
-### Single-page diagnostic
-
-`scripts/diagnose.mjs` launches Chromium with the unpacked extension,
-loads one URL, and dumps the masking decisions and a screenshot.
-
-```bash
-npm run build
-node scripts/diagnose.mjs                                   # default query
-node scripts/diagnose.mjs "https://www.youtube.com/..."     # custom URL
-# Output → diagnose-output/page.png and diagnose-output/logs.txt
-```
-
-### Empirical regression suite
-
-`scripts/regression-test.mjs` walks ~18 fixed YouTube queries and
-writes a markdown report comparing each query's actual masking ratio
-against expected macro thresholds.
-
-```bash
-npm run build
-node scripts/regression-test.mjs
-# Output → diagnose-output/regression-report.md
-```
-
-Run this before every release. The expected output ends with
-`16/18 queries pass`.
-
-## Project layout
+### Project layout
 
 ```
 src/
@@ -141,7 +178,7 @@ src/
 ├── storage/      # chrome.storage abstraction (settings + stats)
 └── types/
 
-tests/                # 10 test files, 124 tests total
+tests/                # 124 unit tests across 10 files
 scripts/              # diagnose, regression-test, icon/promo generators
 docs/
 ├── PRIVACY.md
@@ -149,21 +186,7 @@ docs/
 store-assets/         # listing copy, screenshots, promo tile, submission README
 ```
 
-## Roadmap
-
-- [x] Phase 0 — Bootstrap
-- [x] Phase 1 — V0 heuristics + UI masking
-- [x] Phase 1.5 — Polishing pass (icons, ADRs, regression suite, hide-all mode)
-- [x] Phase 4 (prep) — Chrome Web Store submission package ready in
-      [`store-assets/`](./store-assets/)
-- [ ] Phase 4 (publish) — submit and ship
-- [ ] (deferred) Phase 2 — Local ML classifier (transformers.js +
-      DistilBERT). Skipped for V0 — heuristics + the regression-driven
-      tuning hit the quality bar without the 30 MB model download.
-- [ ] Phase 3 — Personalisation (per-channel learning, stats)
-- [ ] Phase 5 — Firefox port
-
-## Quality bar
+### Quality bar
 
 Two harnesses must be green before any rule change ships:
 
@@ -174,33 +197,35 @@ Two harnesses must be green before any rule change ships:
   **16/18 currently pass.** The two accepted limitations are
   documented in [ADR-0006](./docs/adr/0006-regression-test-strategy.md).
 
-## Not a parental control
+### Architecture decisions
+
+Major design decisions are documented as ADRs under
+[`docs/adr/`](./docs/adr/):
+
+- [ADR-0001](./docs/adr/0001-no-byok-no-embedded-keys.md) — No BYOK, no embedded API keys
+- [ADR-0002](./docs/adr/0002-sum-aggregation-not-mean.md) — Aggregate signals by sum, not weighted mean
+- [ADR-0003](./docs/adr/0003-three-level-display-not-binary.md) — Three-level display strategy (with hide-all default)
+- [ADR-0004](./docs/adr/0004-dom-dedup-via-data-attribute.md) — DOM dedup via attribute marker
+- [ADR-0005](./docs/adr/0005-shorts-format-not-inherently-brainrot.md) — Shorts format ≠ brainrot
+- [ADR-0006](./docs/adr/0006-regression-test-strategy.md) — Regression test strategy (synthetic + empirical)
+- [ADR-0007](./docs/adr/0007-not-a-parental-control.md) — Not a parental control
+
+### Not a parental control
 
 SanityTV's `harmful_kid_content` rule does mask Elsagate-style content
 and named dangerous challenges, but **this is not a substitute for a
 parental control**. A determined adversary defeats heuristic filters
 trivially. For real protection of a child's YouTube experience, use
 [YouTube Kids](https://www.youtubekids.com/) or a dedicated parental
-control product. See
-[ADR-0007](./docs/adr/0007-not-a-parental-control.md).
+control product. See [ADR-0007](./docs/adr/0007-not-a-parental-control.md).
 
-## Architecture decisions
+### Contributing
 
-The major design decisions are documented as ADRs under
-[`docs/adr/`](./docs/adr/):
+See [CONTRIBUTING.md](./CONTRIBUTING.md). The repo enforces
+Conventional Commits, lint, typecheck, and test on every commit.
 
-- [ADR-0001](./docs/adr/0001-no-byok-no-embedded-keys.md) — No BYOK, no embedded API keys
-- [ADR-0002](./docs/adr/0002-sum-aggregation-not-mean.md) — Aggregate signals by sum, not weighted mean
-- [ADR-0003](./docs/adr/0003-three-level-display-not-binary.md) — Three-level display strategy
-- [ADR-0004](./docs/adr/0004-dom-dedup-via-data-attribute.md) — DOM dedup via attribute marker
-- [ADR-0005](./docs/adr/0005-shorts-format-not-inherently-brainrot.md) — Shorts format ≠ brainrot
-- [ADR-0006](./docs/adr/0006-regression-test-strategy.md) — Regression test strategy (synthetic + empirical)
-- [ADR-0007](./docs/adr/0007-not-a-parental-control.md) — Not a parental control
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+---
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE) — use it, fork it, audit it.
