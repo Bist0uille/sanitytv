@@ -1,7 +1,15 @@
 #!/usr/bin/env node
-// Generate the 4 store screenshots (1280x800) by driving Chromium with
-// the unpacked extension and capturing real YouTube pages plus the
-// extension's popup.
+// Generate the store / README screenshots (1280x800).
+//
+// Three frames:
+//   00-clickbait-before.png  — same YouTube clickbait search, with the
+//                              extension installed but PAUSED (Active:off),
+//                              page zoomed out so plenty of clickbait cards
+//                              are visible. The "before" of the comparison.
+//   01-clickbait-after.png   — same URL, extension re-enabled. Same zoom.
+//                              The "after" of the comparison.
+//   03-popup-ui.png          — popup at scale 1.4 with a centred dark
+//                              background.
 
 import { chromium } from 'playwright';
 import path from 'node:path';
@@ -17,6 +25,10 @@ await fs.mkdir(outDir, { recursive: true });
 const userDataDir = path.join(ROOT, 'diagnose-output', '.userdata-screenshots');
 await fs.rm(userDataDir, { recursive: true, force: true });
 await fs.mkdir(userDataDir, { recursive: true });
+
+const CLICKBAIT_URL =
+  'https://www.youtube.com/results?search_query=TOP+10+SHOCKING+DESTROYS';
+const ZOOM = '0.75';
 
 console.log('▶ Launching Chromium with the extension…');
 
@@ -46,25 +58,42 @@ await context.addCookies([
 
 const page = context.pages()[0] ?? (await context.newPage());
 
-// --- Find the extension id from the loaded service worker so we can
-// open chrome-extension://<id>/src/popup/index.html in a tab.
+// Find the extension id from the registered service worker.
 let extensionId = null;
 for (const sw of context.serviceWorkers()) {
-  const url = sw.url();
-  const m = url.match(/^chrome-extension:\/\/([a-p]+)\//);
+  const m = sw.url().match(/^chrome-extension:\/\/([a-p]+)\//);
   if (m) extensionId = m[1];
 }
 if (!extensionId) {
-  console.log('▶ No service worker yet, waiting for one to register…');
   const sw = await context.waitForEvent('serviceworker', { timeout: 15000 });
-  const m = sw.url().match(/^chrome-extension:\/\/([a-p]+)\//);
-  extensionId = m?.[1] ?? null;
+  extensionId = sw.url().match(/^chrome-extension:\/\/([a-p]+)\//)?.[1] ?? null;
 }
 if (!extensionId) {
   console.error('Could not determine extension id; aborting.');
   process.exit(1);
 }
 console.log(`▶ Extension id = ${extensionId}`);
+
+const POPUP_URL = `chrome-extension://${extensionId}/src/popup/index.html`;
+
+const DEFAULT_SETTINGS = {
+  enabled: true,
+  sensitivity: 50,
+  whitelist: [],
+  blacklist: [],
+  hideShortsCompletely: false,
+  hideAllFlagged: true,
+};
+
+async function setSettings(partial) {
+  await page.goto(POPUP_URL, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(
+    async (settings) => {
+      await chrome.storage.sync.set({ 'sanitytv:settings': settings });
+    },
+    { ...DEFAULT_SETTINGS, ...partial },
+  );
+}
 
 async function shot(name, action) {
   console.log(`  → ${name}`);
@@ -74,34 +103,38 @@ async function shot(name, action) {
   console.log(`     saved ${path.relative(ROOT, target)}`);
 }
 
-// 1) Clickbait search WITH extension active — most flagged videos
-//    are visibly greyed/hidden. The "money shot" of the listing.
-//    Scroll past the Shorts shelf to land on the main video grid.
-await shot('01-clickbait-filtered.png', async () => {
-  await page.goto(
-    'https://www.youtube.com/results?search_query=TOP+10+SHOCKING+DESTROYS',
-    { waitUntil: 'domcontentloaded', timeout: 60000 },
-  );
-  await page.waitForTimeout(7000);
-  await page.evaluate(() => window.scrollBy(0, 900));
-  await page.waitForTimeout(2500);
-});
-
-// 2) Further down — different mix of filtered cards.
-await shot('02-clickbait-deeper.png', async () => {
-  await page.evaluate(() => window.scrollBy(0, 1200));
-  await page.waitForTimeout(2500);
-});
-
-// 3) The popup UI in its own page (chrome-extension://<id>/...).
-await shot('03-popup-ui.png', async () => {
-  await page.goto(
-    `chrome-extension://${extensionId}/src/popup/index.html`,
-    { waitUntil: 'domcontentloaded' },
-  );
+async function loadYouTubeAndZoom(url) {
   await page.setViewportSize({ width: 1280, height: 800 });
-  // Centre the popup with a styled wrapper for a clean screenshot.
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await page.waitForTimeout(7000);
+  // Zoom out so more cards fit in the 1280x800 frame — makes the
+  // before/after delta visually obvious.
+  await page.evaluate((z) => {
+    document.body.style.zoom = z;
+  }, ZOOM);
+  // Scroll a bit past the Shorts shelf so the main grid is the focus.
+  await page.evaluate(() => window.scrollBy(0, 700));
+  await page.waitForTimeout(2500);
+}
+
+// 0) Before — extension paused, clickbait shows in full glory.
+await setSettings({ enabled: false });
+await shot('00-clickbait-before.png', async () => {
+  await loadYouTubeAndZoom(CLICKBAIT_URL);
+});
+
+// 1) After — extension on with hide-all-flagged default. Same URL.
+await setSettings({ enabled: true });
+await shot('01-clickbait-after.png', async () => {
+  await loadYouTubeAndZoom(CLICKBAIT_URL);
+});
+
+// 3) The popup UI in its own page.
+await shot('03-popup-ui.png', async () => {
+  await page.goto(POPUP_URL, { waitUntil: 'domcontentloaded' });
+  await page.setViewportSize({ width: 1280, height: 800 });
   await page.evaluate(() => {
+    document.body.style.zoom = '1';
     document.body.style.display = 'flex';
     document.body.style.alignItems = 'center';
     document.body.style.justifyContent = 'center';
@@ -121,16 +154,14 @@ await shot('03-popup-ui.png', async () => {
   await page.waitForTimeout(800);
 });
 
-// 4) A Veritasium search showing zero false positives — this is the
-//    "we won't break your favourite creators" reassurance shot.
-await shot('04-creators-respected.png', async () => {
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(
-    'https://www.youtube.com/results?search_query=veritasium',
-    { waitUntil: 'domcontentloaded', timeout: 60000 },
-  );
-  await page.waitForTimeout(8000);
-});
+// Clean stale legacy frames if they're still on disk from earlier runs.
+for (const stale of [
+  '01-clickbait-filtered.png',
+  '02-clickbait-deeper.png',
+  '04-creators-respected.png',
+]) {
+  await fs.rm(path.join(outDir, stale), { force: true });
+}
 
 await context.close();
 console.log('\n▶ Done. Screenshots in store-assets/screenshots/');

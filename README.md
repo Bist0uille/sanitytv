@@ -19,28 +19,23 @@ No account, no API key, no tracking, no monetisation.
 
 ## See the difference
 
-Search results before SanityTV (a typical clickbait query):
+Same search query, same browser. Left: SanityTV paused. Right:
+SanityTV active with the default settings.
 
-> _full of yelling thumbnails, listicles, top-N, "shocking" everything_
-
-Same search, with SanityTV active by default:
-
-<p align="center">
-  <img src="./store-assets/screenshots/01-clickbait-filtered.png" alt="Clickbait results filtered" width="640">
-</p>
-
-The cards crossing the threshold disappear silently. You see fewer
-videos, calmer titles, and the genuinely useful ones rise to the top.
-
-Your favourite serious creators are untouched:
+**Before** — Shorts shelf, screaming thumbnails, listicles, "shocking"
+everywhere:
 
 <p align="center">
-  <img src="./store-assets/screenshots/04-creators-respected.png" alt="Veritasium results untouched" width="640">
+  <img src="./store-assets/screenshots/00-clickbait-before.png" alt="YouTube clickbait results without SanityTV" width="800">
 </p>
 
-A search for **veritasium** flags zero out of seventeen videos in our
-empirical test suite. Same story for Kurzgesagt, 3Blue1Brown, Le
-Monde, MKBHD, and Lo-fi Hip Hop Radio.
+**After** — the noise is gone. The Shorts shelf is silent, the most
+aggressive cards are out of the feed, and what remains is browsable
+without flinching:
+
+<p align="center">
+  <img src="./store-assets/screenshots/01-clickbait-after.png" alt="Same results with SanityTV active" width="800">
+</p>
 
 ---
 
